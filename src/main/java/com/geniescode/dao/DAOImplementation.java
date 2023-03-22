@@ -3,6 +3,7 @@ package com.geniescode.dao;
 import com.geniescode.model.Credentials;
 import com.geniescode.database.DatabaseConnection;
 import com.geniescode.model.User;
+import com.geniescode.passwordEncryption.PasswordHashGenerator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ public class DAOImplementation implements DAO{
                     "(select * from User user inner join UserAccount account on user.Id = account.UserId) " +
                     "as UserTable where Email = ? and Password = ?");
             statement.setString(1, credentials.email());
-            statement.setString(2, credentials.password());
+            statement.setString(2, new PasswordHashGenerator().apply(credentials.password()));
 
             ResultSet result = statement.executeQuery();
 
@@ -32,7 +33,8 @@ public class DAOImplementation implements DAO{
                         result.getString("Email"),
                         result.getString("AuthorityId"),
                         result.getDate("ExpiryDate"),
-                        result.getBoolean("Enabled")
+                        result.getBoolean("Enabled"),
+                        result.getString("Password")
                 ));
         } catch(SQLException exception) {
             exception.printStackTrace();

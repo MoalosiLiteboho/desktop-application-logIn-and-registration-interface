@@ -6,6 +6,7 @@ import com.geniescode.dtoMapper.UserDTOMapper;
 import com.geniescode.exception.NotFoundException;
 import com.geniescode.model.Credentials;
 import com.geniescode.model.User;
+import com.geniescode.passwordEncryption.PasswordHashGenerator;
 
 import javax.swing.JOptionPane;
 import java.util.function.Consumer;

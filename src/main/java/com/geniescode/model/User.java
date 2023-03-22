@@ -12,6 +12,7 @@ public record User(
         String email,
         String authority,
         Date expiryDate,
-        boolean enabled
+        boolean enabled,
+        String password
 ) {
 }

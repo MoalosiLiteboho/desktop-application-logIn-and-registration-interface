@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 public class ExpiryDateGenerator implements Supplier<LocalDate> {
     @Override
     public LocalDate get() {
-        LocalDate currentDate = LocalDate.now();
-        return currentDate.plusMonths(6);
+        return LocalDate.now()
+                .plusMonths(6);
     }
 }

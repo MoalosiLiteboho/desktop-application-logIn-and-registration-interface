@@ -1,5 +1,6 @@
 package com.geniescode.signUp;
 
+import com.geniescode.date.DateValidator;
 import com.geniescode.email.EmailTaken;
 import com.geniescode.email.EmailValidator;
 
@@ -12,18 +13,19 @@ public interface SignUpValidator extends Function<SignUp, String> {
     SignUpValidator isSurnameValid = user -> !user.surname().isEmpty() ?
             "SUCCESS" : "Surname is Empty \nPlease enter surname";
 
-    SignUpValidator isDateOfBirthValid = user -> "SUCCESS";
+    SignUpValidator isDateOfBirthValid = user -> new DateValidator().test(user.dateOfBirth()) ?
+            "SUCCESS" : "You entered invalid birth date \nPlease enter the correct birthdate ";
 
     SignUpValidator isGenderValid = user -> !user.gender().isEmpty() ?
             "SUCCESS" : "gender not selected \nPlease selected gender";
 
     SignUpValidator isEmailValid = user -> {
-        if(new EmailTaken().test(user.email()))
-            return "the email is taken please try to enter the other email or create new one ";
-        else if (user.email().isEmpty())
-            return  "Username is empty! \n Please enter email";
-        else if (!new EmailValidator().test(user.email()))
+        if(user.email().isEmpty())
+            return  "Email field is empty! \n Please enter email";
+        else if(!new EmailValidator().test(user.email()))
             return  "Email you entered is not in a CORRECT format \nPlease enter the email in a correct Format";
+        else if(new EmailTaken().test(user.email()))
+            return "the email is taken please try to enter the other email or create new one ";
         else
             return  "SUCCESS";
     };

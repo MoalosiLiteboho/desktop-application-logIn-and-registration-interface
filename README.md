@@ -12,3 +12,6 @@ All the above functionalities are triggered when the user press logIn button. Be
 ## LogIn GUI
 ![Screenshot from 2023-03-22 20-18-00](https://user-images.githubusercontent.com/112495633/227000232-a0b1bb49-75d8-4886-bdcd-4dadc1dd7fe1.png)
 
+## Registration GUI
+![Screenshot from 2023-03-23 14-43-02](https://user-images.githubusercontent.com/112495633/227207499-7b6ce212-0735-42f9-874f-c450b6fa3749.png)
+

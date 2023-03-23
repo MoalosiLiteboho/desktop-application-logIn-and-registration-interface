@@ -1,6 +1,5 @@
 package com.geniescode.signUp;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 public record SignUp(

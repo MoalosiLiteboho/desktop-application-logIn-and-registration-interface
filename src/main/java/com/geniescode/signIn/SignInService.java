@@ -1,6 +1,7 @@
 package com.geniescode.signIn;
 
 import com.geniescode.dao.DAOImplementation;
+import com.geniescode.share.exception.DisabledException;
 import com.geniescode.share.exception.NotFoundException;
 import com.geniescode.share.model.User;
 
@@ -38,9 +39,15 @@ public class SignInService {
     }
 
     private SignInDTO getUserByUsernameAndId() {
-        User userDetailsFromDatabase = userDAO.findUserByEmailAndPassword(credentials)
-                .orElseThrow(() -> new NotFoundException("Email and Password you entered are INVALID! \n Please try again using CORRECT credentials!"));
-        return new SignInDTOMapper().apply(userDetailsFromDatabase);
+        return new SignInDTOMapper().apply(
+                userDAO.findUserByEmailAndPassword(credentials)
+                        .filter(User::isEnabled)
+                        .orElseThrow(() -> {
+                            if (userDAO.findUserByEmailAndPassword(credentials).isPresent())
+                                return new DisabledException("Your account is disabled. Please contact support for assistance.", true);
+                            else
+                                return new NotFoundException("Email and Password you entered are INVALID! \n Please try again using CORRECT credentials!", true);
+                        }));
     }
 
     private void displayDashboard(SignInDTO user) {

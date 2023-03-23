@@ -4,6 +4,7 @@ import com.geniescode.signIn.SignIn;
 import com.geniescode.share.model.User;
 import com.geniescode.share.password.PasswordEncryptor;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +34,7 @@ public class DAOImplementation implements DAO{
                         result.getString("Gender"),
                         LocalDate.parse(result.getString("DateOfBirth")),
                         result.getString("Email"),
-                        result.getString("AuthorityId"),
+                        result.getInt("AuthorityId"),
                         result.getDate("ExpiryDate").toLocalDate(),
                         result.getBoolean("Enabled"),
                         result.getString("Password")
@@ -46,9 +47,27 @@ public class DAOImplementation implements DAO{
 
     @Override
     public void saveUser(User user) {
-        System.out.println(
-                user.toString()
-        );
+        try {
+            PreparedStatement statement = connection.get().prepareStatement("insert into User(Id, Name, Surname, Gender, DateOfBirth) values (?, ?, ?, ?, ?)");
+            statement.setInt(1, user.Id());
+            statement.setString(2, user.name());
+            statement.setString(3, user.surname());
+            statement.setString(4, user.gender());
+            statement.setDate(5, Date.valueOf(user.dateOfBirth()));
+
+            statement.executeUpdate();
+            statement = connection.get().prepareStatement("insert into UserAccount(UserId, AuthorityId, Email, Password, Enabled, ExpiryDate) values (?, ?, ?, ?, ?, ?)");
+            statement.setInt(1, user.Id());
+            statement.setInt(2, user.authority());
+            statement.setString(3, user.email());
+            statement.setString(4, new PasswordEncryptor().apply(user.password()));
+            statement.setBoolean(5, user.enabled());
+            statement.setDate(6, Date.valueOf(user.expiryDate()));
+
+            statement.executeUpdate();
+        } catch(SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Override

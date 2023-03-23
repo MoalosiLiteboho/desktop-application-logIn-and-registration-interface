@@ -9,9 +9,12 @@ public record User(
         String gender,
         LocalDate dateOfBirth,
         String email,
-        String authority,
+        Integer authority,
         LocalDate expiryDate,
         boolean enabled,
         String password
 ) {
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

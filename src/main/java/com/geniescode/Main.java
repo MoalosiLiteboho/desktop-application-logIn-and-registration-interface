@@ -1,9 +1,9 @@
 package com.geniescode;
 
-import com.geniescode.frame.SignIn;
+import com.geniescode.signIn.SignInFrame;
 
 public class Main {
     public static void main(String[] args) {
-        new SignIn().setVisible(true);
+        new SignInFrame().setVisible(true);
     }
 }

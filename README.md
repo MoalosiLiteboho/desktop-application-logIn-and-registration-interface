@@ -1,4 +1,3 @@
-## Desktop Application LogIn Interface 
 # Desktop Application LogIn Interface
 
 This application helps the use to sign-in, and it has the following features

@@ -1,7 +1,6 @@
 package com.geniescode.share.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public record User(
         int Id,

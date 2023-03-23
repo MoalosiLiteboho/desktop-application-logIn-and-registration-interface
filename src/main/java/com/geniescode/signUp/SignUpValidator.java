@@ -1,5 +1,6 @@
 package com.geniescode.signUp;
 
+import com.geniescode.email.EmailTaken;
 import com.geniescode.email.EmailValidator;
 
 import java.util.function.Function;
@@ -17,12 +18,14 @@ public interface SignUpValidator extends Function<SignUp, String> {
             "SUCCESS" : "gender not selected \nPlease selected gender";
 
     SignUpValidator isEmailValid = user -> {
-        System.out.println(new EmailValidator().test(user.email()));
-        if (user.email().isEmpty())
+        if(new EmailTaken().test(user.email()))
+            return "the email is taken please try to enter the other email or create new one ";
+        else if (user.email().isEmpty())
             return  "Username is empty! \n Please enter email";
-        if (!new EmailValidator().test(user.email()))
+        else if (!new EmailValidator().test(user.email()))
             return  "Email you entered is not in a CORRECT format \nPlease enter the email in a correct Format";
-        return  "SUCCESS";
+        else
+            return  "SUCCESS";
     };
 
     default SignUpValidator and (SignUpValidator others) {

@@ -1,6 +1,15 @@
 package com.geniescode.share.components.dateChooser;
 
-import java.awt.*;
+import javaswingdev.GoogleMaterialDesignIcon;
+import javaswingdev.GoogleMaterialIcon;
+import net.miginfocom.swing.MigLayout;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -9,23 +18,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public final class DateChooser extends javax.swing.JPanel {
+public final class DateChooser extends JPanel {
 
-    public JTextField getTextRefernce() {
-        return textRefernce;
+    public JTextField getTextReference() {
+        return textReference;
     }
 
     public void addEventDateChooser(EventDateChooser event) {
         events.add(event);
     }
 
-    private JTextField textRefernce;
-    private final String MONTH_ENGLISH[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    private JTextField textReference;
+    private final String[] MONTH_ENGLISH = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
     private String dateFormat = "dd-MM-yyyy";
     private int MONTH = 1;
     private int YEAR = 2021;
@@ -47,13 +58,13 @@ public final class DateChooser extends javax.swing.JPanel {
         toDay(false);
     }
 
-    public void setTextRefernce(JTextField txt) {
-        this.textRefernce = txt;
-        this.textRefernce.setEditable(false);
-        this.textRefernce.addMouseListener(new MouseAdapter() {
+    public void setTextReference(JTextField txt) {
+        this.textReference = txt;
+        this.textReference.setEditable(false);
+        this.textReference.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                if (textRefernce.isEnabled()) {
+                if (textReference.isEnabled()) {
                     showPopup();
                 }
             }
@@ -62,25 +73,22 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     private void setText(boolean runEvent, int act) {
-        if (textRefernce != null) {
+        if (textReference != null)
             try {
                 SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                 Date date = df.parse(DAY + "-" + MONTH + "-" + YEAR);
-                textRefernce.setText(new SimpleDateFormat(dateFormat).format(date));
-            } catch (ParseException e) {
-                System.err.println(e);
+                textReference.setText(new SimpleDateFormat(dateFormat).format(date));
+            } catch (ParseException exception) {
+                exception.printStackTrace();
             }
-        }
-        if (runEvent) {
+        if (runEvent)
             runEvent(act);
-        }
     }
 
     private void runEvent(int act) {
         SelectedAction action = () -> act;
-        for (EventDateChooser event : events) {
+        for (EventDateChooser event : events)
             event.dateSelected(action, selectedDate);
-        }
     }
 
     private Event getEventDay(Dates dates) {
@@ -105,11 +113,11 @@ public final class DateChooser extends javax.swing.JPanel {
             selectedDate.setMonth(MONTH);
             selectedDate.setYear(YEAR);
             setText(true, 2);
-            Dates d = new Dates();
-            d.setForeground(getForeground());
-            d.setEvent(getEventDay(d));
-            d.showDate(MONTH, YEAR, selectedDate);
-            if (slide.slideToDown(d)) {
+            Dates dates = new Dates();
+            dates.setForeground(getForeground());
+            dates.setEvent(getEventDay(dates));
+            dates.showDate(MONTH, YEAR, selectedDate);
+            if (slide.slideToDown(dates)) {
                 cmdMonth.setText(MONTH_ENGLISH[MONTH - 1]);
                 cmdYear.setText(String.valueOf(YEAR));
                 STATUS = 1;
@@ -201,7 +209,7 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     public void showPopup() {
-        popup.show(textRefernce, 0, textRefernce.getHeight());
+        popup.show(textReference, 0, textReference.getHeight());
     }
 
     public void hidePopup() {
@@ -209,6 +217,14 @@ public final class DateChooser extends javax.swing.JPanel {
     }
 
     private void initComponents() {
+        header = new JPanel();
+        Button cmdForward = new Button();
+        JLayeredPane MY = new JLayeredPane();
+        cmdMonth = new Button();
+        javax.swing.JLabel lb = new javax.swing.JLabel();
+        cmdYear = new Button();
+        Button cmdPrevious = new Button();
+        slide = new Slider();
 
         popup = new JPopupMenu(){
             @Override
@@ -219,121 +235,66 @@ public final class DateChooser extends javax.swing.JPanel {
                 graphics.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
             }
         };
-        header = new javax.swing.JPanel();
-        Button cmdForward = new Button();
-        JLayeredPane MY = new JLayeredPane();
-        cmdMonth = new Button();
-        javax.swing.JLabel lb = new javax.swing.JLabel();
-        cmdYear = new Button();
-        Button cmdPrevious = new Button();
-        slide = new Slider();
 
-        setBackground(new Color(255, 255, 255));
+        cmdYear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmdYear.setForeground(Color.white);
+        cmdYear.setText("2018");
+        cmdYear.setFocusPainted(false);
+        cmdYear.setFont(new java.awt.Font("sanserif", Font.PLAIN, 14));
+        cmdYear.setPaintBackground(false);
+        cmdYear.addActionListener(this::cmdYearActionPerformed);
 
-        header.setBackground(new Color(204, 93, 93));
-        header.setMaximumSize(new java.awt.Dimension(262, 40));
-
-        cmdForward.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cmdForward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/datechooser/forward.png"))); // NOI18N
-        cmdForward.setFocusable(true);
-        cmdForward.setPaintBackground(false);
-        cmdForward.addActionListener(this::cmdForwardActionPerformed);
-
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0);
-        flowLayout1.setAlignOnBaseline(true);
-        MY.setLayout(flowLayout1);
+        lb.setForeground(new Color(255, 255, 255));
+        lb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lb.setText("-");
 
         cmdMonth.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         cmdMonth.setForeground(new Color(255, 255, 255));
         cmdMonth.setText("January");
         cmdMonth.setFocusPainted(false);
-        cmdMonth.setFont(new java.awt.Font("Kh Content", 0, 14)); // NOI18N
+        cmdMonth.setFont(new java.awt.Font("sanserif", Font.PLAIN, 14)); // NOI18N
         cmdMonth.setPaintBackground(false);
         cmdMonth.addActionListener(this::cmdMonthActionPerformed);
+
+        cmdForward.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmdForward.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_LEFT, null, Color.white, Color.white, 20).toIcon());
+        cmdForward.setFocusable(true);
+        cmdForward.setPaintBackground(false);
+        cmdForward.addActionListener(this::cmdForwardActionPerformed);
+
+
+        MY.setLayout(new MigLayout("center, flowx, aligny center", "[][][]", ""));
         MY.add(cmdMonth);
-
-        lb.setForeground(new Color(255, 255, 255));
-        lb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lb.setText("-");
         MY.add(lb);
-
-        cmdYear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cmdYear.setForeground(new Color(255, 255, 255));
-        cmdYear.setText("2018");
-        cmdYear.setFocusPainted(false);
-        cmdYear.setFont(new java.awt.Font("sanserif", Font.PLAIN, 14)); // NOI18N
-        cmdYear.setPaintBackground(false);
-        cmdYear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdYearActionPerformed(evt);
-            }
-        });
         MY.add(cmdYear);
 
         cmdPrevious.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cmdPrevious.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/datechooser/previous.png"))); // NOI18N
+        cmdPrevious.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_RIGHT, null, Color.white, Color.white, 20).toIcon()); // NOI18N
         cmdPrevious.setFocusable(true);
         cmdPrevious.setPaintBackground(false);
-        cmdPrevious.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdPreviousActionPerformed(evt);
-            }
-        });
+        cmdPrevious.addActionListener(this::cmdPreviousActionPerformed);
         cmdPrevious.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
                 cmdPreviousKeyPressed(evt);
             }
         });
 
-        javax.swing.GroupLayout headerLayout = new javax.swing.GroupLayout(header);
-        header.setLayout(headerLayout);
-        headerLayout.setHorizontalGroup(
-            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cmdPrevious, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MY, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmdForward, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        headerLayout.setVerticalGroup(
-            headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmdPrevious, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(MY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdForward, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        slide.setLayout(new BoxLayout(slide, BoxLayout.LINE_AXIS));
 
-        slide.setLayout(new javax.swing.BoxLayout(slide, javax.swing.BoxLayout.LINE_AXIS));
+        header.setLayout(new MigLayout("", "[pref!, grow][198px][pref!, grow]", ""));
+        header.add(cmdPrevious, "grow");
+        header.add(MY, "growx, width 198!");
+        header.add(cmdForward, "grow");
+        header.setBackground(new Color(204, 93, 93));
+        header.setMaximumSize(new Dimension(262, 40));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(slide, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(slide, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        setLayout(new MigLayout("", "[grow]", "[][]"));
+        add(header, "wrap");
+        add(slide, "grow, height 165, wrap");
+        setBackground(Color.white);
     }
 
-    private void cmdPreviousActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cmdPreviousActionPerformed(ActionEvent event) {
         if (STATUS == 1) {   //  Date
             if (MONTH == 1) {
                 MONTH = 12;
@@ -350,12 +311,12 @@ public final class DateChooser extends javax.swing.JPanel {
                 Months months = new Months();
                 months.setEvent(getEventMonth());
                 slide.slideToLeft(months);
-                cmdYear.setText(YEAR + "");
+                cmdYear.setText(String.valueOf(YEAR));
             }
         }
     }
 
-    private void cmdForwardActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cmdForwardActionPerformed(ActionEvent evt) {
         if (STATUS == 1) {   //  Date
             if (MONTH == 12) {
                 MONTH = 1;
@@ -375,7 +336,7 @@ public final class DateChooser extends javax.swing.JPanel {
         }
     }
 
-    private void cmdMonthActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cmdMonthActionPerformed(ActionEvent evt) {
         if (STATUS != 2) {
             STATUS = 2;
             Months months = new Months();
@@ -391,7 +352,7 @@ public final class DateChooser extends javax.swing.JPanel {
         }
     }
 
-    private void cmdYearActionPerformed(java.awt.event.ActionEvent evt) {
+    private void cmdYearActionPerformed(ActionEvent evt) {
         if (STATUS != 3) {
             STATUS = 3;
             Years years = new Years();
@@ -411,27 +372,23 @@ public final class DateChooser extends javax.swing.JPanel {
     private void cmdPreviousKeyPressed(KeyEvent evt) {
         if (evt.getKeyCode() == KeyEvent.VK_UP) {
             Component com = slide.getComponent(0);
-            if (com instanceof Dates) {
-                Dates d = (Dates) com;
-                d.up();
+            if (com instanceof Dates dates) {
+                dates.up();
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
             Component com = slide.getComponent(0);
-            if (com instanceof Dates) {
-                Dates d = (Dates) com;
-                d.down();
+            if (com instanceof Dates dates) {
+                dates.down();
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
             Component com = slide.getComponent(0);
-            if (com instanceof Dates) {
-                Dates d = (Dates) com;
-                d.back();
+            if (com instanceof Dates dates) {
+                dates.back();
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
             Component com = slide.getComponent(0);
-            if (com instanceof Dates) {
-                Dates d = (Dates) com;
-                d.next();
+            if (com instanceof Dates dates) {
+                dates.next();
             }
         }
     }
@@ -447,9 +404,9 @@ public final class DateChooser extends javax.swing.JPanel {
     public void setSelectedDate(Date date) {
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String d = df.format(date);
-        DAY = Integer.valueOf(d.split("-")[0]);
-        MONTH = Integer.valueOf(d.split("-")[1]);
-        YEAR = Integer.valueOf(d.split("-")[2]);
+        DAY = Integer.parseInt(d.split("-")[0]);
+        MONTH = Integer.parseInt(d.split("-")[1]);
+        YEAR = Integer.parseInt(d.split("-")[2]);
         selectedDate.setDay(DAY);
         selectedDate.setMonth(MONTH);
         selectedDate.setYear(YEAR);
@@ -460,16 +417,10 @@ public final class DateChooser extends javax.swing.JPanel {
         dates.showDate(MONTH, YEAR, selectedDate);
         slide.slideNon(dates);
         cmdMonth.setText(MONTH_ENGLISH[MONTH - 1]);
-        cmdYear.setText(YEAR + "");
+        cmdYear.setText(String.valueOf(YEAR));
         setText(true, 0);
         STATUS = 1;
     }
-
-    private Button cmdMonth;
-    private Button cmdYear;
-    private javax.swing.JPanel header;
-    private JPopupMenu popup;
-    private Slider slide;
 
     public SelectedDate getSelectedDate() {
         return selectedDate;
@@ -487,7 +438,7 @@ public final class DateChooser extends javax.swing.JPanel {
         dates.showDate(MONTH, YEAR, selectedDate);
         slide.slideNon(dates);
         cmdMonth.setText(MONTH_ENGLISH[MONTH - 1]);
-        cmdYear.setText(YEAR + "");
+        cmdYear.setText(String.valueOf(YEAR));
         setText(true, 0);
         STATUS = 1;
     }
@@ -500,4 +451,10 @@ public final class DateChooser extends javax.swing.JPanel {
             toDay(false);
         }
     }
+
+    private Button cmdMonth;
+    private Button cmdYear;
+    private JPanel header;
+    private JPopupMenu popup;
+    private Slider slide;
 }

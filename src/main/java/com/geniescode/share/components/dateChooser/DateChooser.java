@@ -57,10 +57,10 @@ public final class DateChooser extends JPanel {
         popup = new JPopupMenu(){
             @Override
             protected void paintComponent(Graphics graphics) {
-                graphics.setColor(new Color(114, 113, 113));
+                graphics.setColor(Color.gray);
                 graphics.fillRect(0, 0, getWidth(), getHeight());
-                graphics.setColor(Color.WHITE);
-                graphics.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
+                graphics.setColor(Color.white);
+                graphics.fillRect(0, 0, getWidth(), getHeight());
             }
         };
 
@@ -72,20 +72,20 @@ public final class DateChooser extends JPanel {
         cmdYear.setPaintBackground(false);
         cmdYear.addActionListener(this::cmdYearActionPerformed);
 
-        lb.setForeground(new Color(255, 255, 255));
+        lb.setForeground(Color.white);
         lb.setHorizontalAlignment(SwingConstants.CENTER);
         lb.setText("-");
 
         cmdMonth.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cmdMonth.setForeground(new Color(255, 255, 255));
+        cmdMonth.setForeground(Color.white);
         cmdMonth.setText("January");
         cmdMonth.setFocusPainted(false);
-        cmdMonth.setFont(new java.awt.Font("sanserif", Font.PLAIN, 14)); // NOI18N
+        cmdMonth.setFont(new java.awt.Font("sanserif", Font.PLAIN, 14));
         cmdMonth.setPaintBackground(false);
         cmdMonth.addActionListener(this::cmdMonthActionPerformed);
 
         cmdForward.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cmdForward.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_LEFT, null, Color.white, Color.white, 20).toIcon());
+        cmdForward.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_RIGHT, null, Color.white, Color.white, 20).toIcon());
         cmdForward.setFocusable(true);
         cmdForward.setPaintBackground(false);
         cmdForward.addActionListener(this::cmdForwardActionPerformed);
@@ -97,7 +97,7 @@ public final class DateChooser extends JPanel {
         header.add(cmdYear);
 
         cmdPrevious.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cmdPrevious.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_RIGHT, null, Color.white, Color.white, 20).toIcon()); // NOI18N
+        cmdPrevious.setIcon(new GoogleMaterialIcon(GoogleMaterialDesignIcon.KEYBOARD_ARROW_LEFT, null, Color.white, Color.white, 20).toIcon());
         cmdPrevious.setFocusable(true);
         cmdPrevious.setPaintBackground(false);
         cmdPrevious.addActionListener(this::cmdPreviousActionPerformed);
@@ -129,8 +129,8 @@ public final class DateChooser extends JPanel {
         toDay(false);
     }
 
-    public void setTextReference(JTextField txt) {
-        this.textReference = txt;
+    public void setTextReference(JTextField textField) {
+        this.textReference = textField;
         this.textReference.setEditable(false);
         this.textReference.addMouseListener(new MouseAdapter() {
             @Override
@@ -171,9 +171,8 @@ public final class DateChooser extends JPanel {
             selectedDate.setMonth(MONTH);
             selectedDate.setYear(YEAR);
             setText(true, 1);
-            if (evt != null && evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
+            if (evt != null && evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt))
                 popup.setVisible(false);
-            }
         };
     }
 

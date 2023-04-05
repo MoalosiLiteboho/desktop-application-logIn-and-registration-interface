@@ -35,5 +35,12 @@
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
         </dependency>
+        <dependency>
+            <groupId>javaswingdev</groupId>
+            <artifactId>gradient-icon-font</artifactId>
+            <scope>system</scope>
+            <version>1.0.0.0</version>
+            <systemPath>${project.basedir}/lib/gradient-icon-font.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

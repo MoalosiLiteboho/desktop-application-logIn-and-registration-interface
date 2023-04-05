@@ -37,4 +37,4 @@ All the above functionalities are triggered when the user press logIn button. Be
 Do the following to run this project:
 * Run Xampp app on your local machine
 * Run the database.sql and insert.sql in an order after Xampp server is up
-* In the DatabaseConnection interface, add the username and password in url like as follows ("jdbc:mysql://localhost:3306/HospitalSystemDesktopApplication", "username", "password")
+* In the DatabaseConnection interface, add the username and password in url like as follows ("jdbc:mysql://localhost:3306/HospitalSystemDesktopApplication", "username", "password"). Please change username and password if you have setup your xampp with such credentials.

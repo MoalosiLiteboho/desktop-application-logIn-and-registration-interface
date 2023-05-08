@@ -1,5 +1,6 @@
 package com.geniescode.dao;
 
+import com.geniescode.database.DatabaseConnection;
 import com.geniescode.signIn.SignIn;
 import com.geniescode.share.model.User;
 import com.geniescode.share.password.PasswordEncryptor;
@@ -11,14 +12,17 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.geniescode.share.database.DatabaseConnection.connection;
-
 public class DAOImplementation implements DAO{
+    private final DatabaseConnection databaseConnection;
+
+    public DAOImplementation() {
+        databaseConnection = new DatabaseConnection();
+    }
 
     @Override
     public Optional<User> findUserByEmailAndPassword(SignIn signIn) {
         try {
-            PreparedStatement statement = connection.get().prepareStatement("select Id, Name ,Surname ,Gender ,DateOfBirth ,AuthorityId ,Email ,Password, Enabled ,ExpiryDate from " +
+            PreparedStatement statement = databaseConnection.get().prepareStatement("select Id, Name ,Surname ,Gender ,DateOfBirth ,AuthorityId ,Email ,Password, Enabled ,ExpiryDate from " +
                     "(select * from User user inner join UserAccount account on user.Id = account.UserId) " +
                     "as UserTable where Email = ? and Password = ?");
             statement.setString(1, signIn.email());
@@ -48,7 +52,7 @@ public class DAOImplementation implements DAO{
     @Override
     public void saveUser(User user) {
         try {
-            PreparedStatement statement = connection.get().prepareStatement("insert into User(Id, Name, Surname, Gender, DateOfBirth) values (?, ?, ?, ?, ?)");
+            PreparedStatement statement = databaseConnection.get().prepareStatement("insert into User(Id, Name, Surname, Gender, DateOfBirth) values (?, ?, ?, ?, ?)");
             statement.setInt(1, user.Id());
             statement.setString(2, user.name());
             statement.setString(3, user.surname());
@@ -56,7 +60,7 @@ public class DAOImplementation implements DAO{
             statement.setDate(5, Date.valueOf(user.dateOfBirth()));
 
             statement.executeUpdate();
-            statement = connection.get().prepareStatement("insert into UserAccount(UserId, AuthorityId, Email, Password, Enabled, ExpiryDate) values (?, ?, ?, ?, ?, ?)");
+            statement = databaseConnection.get().prepareStatement("insert into UserAccount(UserId, AuthorityId, Email, Password, Enabled, ExpiryDate) values (?, ?, ?, ?, ?, ?)");
             statement.setInt(1, user.Id());
             statement.setInt(2, user.authority());
             statement.setString(3, user.email());
@@ -73,7 +77,7 @@ public class DAOImplementation implements DAO{
     @Override
     public Optional<String> findEmailByEmail(String email) {
         try {
-            PreparedStatement statement = connection.get().prepareStatement("select Email from UserAccount where Email = ?");
+            PreparedStatement statement = databaseConnection.get().prepareStatement("select Email from UserAccount where Email = ?");
             statement.setString(1, email);
 
             ResultSet result = statement.executeQuery();
